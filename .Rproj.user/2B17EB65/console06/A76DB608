@@ -54,3 +54,20 @@ To github.com:GV-CEPESP/caculo_cadeiras.git
  * [new branch]      master -> master
 ]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  clear
 [3J[H[2J]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  [K[A]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$$ git add -A
+]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras [00m$ git commit- [K[K -m "add [K[Kd quoeficiente[K[K[K[K[K[K[K[K[K partidrio[K[K[Kario. Fatal o cl[Kalculo das v agas"
+[master bb0e891] add quo partidario. Fatal o calculo das vagas
+ 11 files changed, 113 insertions(+), 35 deletions(-)
+ delete mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/3D0FC240
+ create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/B1E23C3E
+ create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/B1E23C3E-contents
+ create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/E020FAFF-contents
+]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras [00m$ git push origin master
+Counting objects: 18, done.
+Delta compression using up to 4 threads.
+Compressing objects:   5% (1/17)   Compressing objects:  11% (2/17)   Compressing objects:  17% (3/17)   Compressing objects:  23% (4/17)   Compressing objects:  29% (5/17)   Compressing objects:  35% (6/17)   Compressing objects:  41% (7/17)   Compressing objects:  47% (8/17)   Compressing objects:  52% (9/17)   Compressing objects:  58% (10/17)   Compressing objects:  64% (11/17)   Compressing objects:  70% (12/17)   Compressing objects:  76% (13/17)   Compressing objects:  82% (14/17)   Compressing objects:  88% (15/17)   Compressing objects:  94% (16/17)   Compressing objects: 100% (17/17)   Compressing objects: 100% (17/17), done.
+Writing objects:   5% (1/18)   Writing objects:  11% (2/18)   Writing objects:  16% (3/18)   Writing objects:  22% (4/18)   Writing objects:  27% (5/18)   Writing objects:  33% (6/18)   Writing objects:  38% (7/18)   Writing objects:  44% (8/18)   Writing objects:  50% (9/18)   Writing objects:  55% (10/18)   Writing objects:  61% (11/18)   Writing objects:  66% (12/18)   Writing objects:  72% (13/18)   Writing objects:  77% (14/18)   Writing objects:  83% (15/18)   Writing objects:  88% (16/18)   Writing objects:  94% (17/18)   Writing objects: 100% (18/18)   Writing objects: 100% (18/18), 3.47 KiB | 1.16 MiB/s, done.
+Total 18 (delta 7), reused 0 (delta 0)
+remote: Resolving deltas:   0% (0/7)   [Kremote: Resolving deltas:  14% (1/7)   [Kremote: Resolving deltas:  28% (2/7)   [Kremote: Resolving deltas:  42% (3/7)   [Kremote: Resolving deltas:  57% (4/7)   [Kremote: Resolving deltas:  71% (5/7)   [Kremote: Resolving deltas:  85% (6/7)   [Kremote: Resolving deltas: 100% (7/7)   [Kremote: Resolving deltas: 100% (7/7), completed with 7 local objects.[K
+To github.com:GV-CEPESP/caculo_cadeiras.git
+   4e4dbc7..bb0e891  master -> master
+]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras [00m$ 

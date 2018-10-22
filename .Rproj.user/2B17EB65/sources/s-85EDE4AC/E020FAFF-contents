@@ -1,2 +1,0 @@
-template_total %>% filter(SG_UF == "SP", NM_COLIGACAO == "PSL") %>% pull(CANDIDATOS)
-
