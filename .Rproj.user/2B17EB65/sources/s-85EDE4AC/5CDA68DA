@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1540217706374.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "5CDA68DA",
+    "lastKnownWriteTime" : 1540230679,
+    "last_content_update" : 1540230679679,
+    "path" : "~/Documents/Meu/calculo_cadeiras/script_calc.R",
+    "project_path" : "script_calc.R",
+    "properties" : {
+        "cursorPosition" : "19,38",
+        "scrollLine" : "10",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
