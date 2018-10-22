@@ -45,6 +45,14 @@ template_total <- resultado %>%
                                                     QT_VOTOS = unlist(QT_VOTOS)))) %>% 
   select(-NR_VOTAVEL,-QT_VOTOS,-TIPO_VOTO) %>% 
   dplyr::left_join(vagas) %>% 
-  dplyr::mutate(TOTAL_VOTOS    = purrr::map_int(CANDIDATOS, ~sum(.$QT_VOTOS)),
-                QUO_PARTIDARIO = TOTAL_VOTOS/sum(TOTAL_VOTOS))
+  dplyr::mutate(TOTAL_VOTOS        = purrr::map_int(CANDIDATOS, ~sum(.$QT_VOTOS)),
+                QUO_ELEITORAL      = sum(TOTAL_VOTOS) / QT_VAGAS,
+                QUO_PARTIDARIO     = TOTAL_VOTOS/QUO_ELEITORAL)
 
+template_total$N_ELEGIVEIS <- NA
+
+for(i in seq_along(template_total$CANDIDATOS)){
+  barreira <- as.integer(template_total$QUO_ELEITORAL[[i]] * 0.10)
+  n_elegiveis <- sum(template_total$CANDIDATOS[[i]]$QT_VOTOS > barreira)
+  template_total$N_ELEGIVEIS[[i]] <- n_elegiveis
+}
