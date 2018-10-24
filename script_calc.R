@@ -3,7 +3,6 @@ rm(list = ls())
 library(magrittr)
 library(tidyverse)
 
-
 # 1. template vagas -------------------------------------------------------
 
 vagas <- readr::read_rds("data/vagas.rds")
@@ -65,32 +64,12 @@ for(i in seq_along(template_total$CANDIDATOS)){
   template_total$N_ELEGIVEIS[[i]] <- n_elegiveis
 }
 
-sobras<-template_total %>% group_by(SG_UF, QT_VAGAS) %>% summarise(eleitos_UFC=sum(CADEIRAS)) %>% 
+sobras <- template_total %>%
+  group_by(SG_UF, QT_VAGAS) %>%
+  summarise(eleitos_UFC=sum(CADEIRAS)) %>% 
   mutate(dif=QT_VAGAS-eleitos_UFC) %>% arrange(SG_UF)
 
 rodadas<-sobras[c("SG_UF","dif")]
-
-#Vamos calcular o resultado pelas regras eleitorais 2014
-#Sem barreira dos 10% e sem divisão com partidos que não atingiram o QE
-
-for(i in seq_along(rodadas$SG_UF)){
-  print(i)
-  x<-filter(template_total, SG_UF==rodadas$SG_UF[i])
-  x<- x  %>% filter(QUO_ELEITORAL>=1)
-  for (rodada in 1:rodadas$dif[i]){
-    print(rodada)
-    x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS+1))
-    x<-x %>% mutate(vencedor=0)
-    x<-x %>% mutate(vencedor=ifelse(media==max(.$media),1,0))
-    x<-x %>% mutate(CADEIRAS = CADEIRAS + vencedor)
-  }
-  if(i==1){banco_r1<-x}else{banco_r1<-rbind(banco_r1, x)}
-  rm(x)
-}
-sum(banco_r1$CADEIRAS)
-
-check<-banco_r1 %>% group_by(SG_UF, QT_VAGAS) %>% summarise(eleitos_UFC=sum(CADEIRAS)) %>% 
-  mutate(dif=QT_VAGAS-eleitos_UFC) %>% arrange(SG_UF)
 
 #3. Cálculo de quantidade de eleitos por coligação em cada regra------------------------
 #3.1 Regras 2014 -----------------------------------------------------------------------
@@ -112,9 +91,15 @@ for(i in seq_along(rodadas$SG_UF)){
 }
 sum(banco_r1$CADEIRAS)
 
-check<-banco_r1 %>% group_by(SG_UF, QT_VAGAS) %>% summarise(eleitos_UFC=sum(CADEIRAS)) %>% 
-  mutate(dif=QT_VAGAS-eleitos_UFC) %>% arrange(SG_UF)
-banco_r1<-banco_r1 %>% select(SG_UF, NM_COLIGACAO, CADEIRAS) %>% rename(CADEIRAS_r1=CADEIRAS)
+check <- banco_r1 %>% 
+  group_by(SG_UF, QT_VAGAS) %>%
+  summarise(eleitos_UFC=sum(CADEIRAS)) %>% 
+  mutate(dif=QT_VAGAS-eleitos_UFC) %>%
+  arrange(SG_UF)
+
+banco_r1 <- banco_r1 %>%
+  select(SG_UF, NM_COLIGACAO, CADEIRAS) %>% 
+  rename(CADEIRAS_r1 = CADEIRAS)
 
 #3.2 Regras 2014 incluindo nanicos na partilha-----------------------------------------------------------------------
 #Sem barreira dos 10% e com divisão com partidos que não atingiram o QE
@@ -133,7 +118,10 @@ for(i in seq_along(rodadas$SG_UF)){
   rm(x)
 }
 sum(banco_r2$CADEIRAS)
-banco_r2<-banco_r2 %>% select(SG_UF, NM_COLIGACAO, CADEIRAS) %>% rename(CADEIRAS_r2=CADEIRAS)
+
+banco_r2<-banco_r2 %>%
+  select(SG_UF, NM_COLIGACAO, CADEIRAS) %>%
+  rename(CADEIRAS_r2=CADEIRAS)
 
 #3.3 Regras 2018 -----------------------------------------------------------------------
 #Com barreira dos 10% e com divisão com partidos que não atingiram o QE
@@ -158,11 +146,83 @@ for(i in seq_along(rodadas$SG_UF)){
   rm(x)
 }
 sum(banco_r3$CADEIRAS)
-banco_r3<-banco_r3 %>% select(SG_UF, NM_COLIGACAO, CADEIRAS) %>% rename(CADEIRAS_r3=CADEIRAS)
+
+banco_r3 <- banco_r3 %>%
+  select(SG_UF, NM_COLIGACAO, CADEIRAS) %>%
+  rename(CADEIRAS_r3=CADEIRAS)
+
+# 3.4. Contrafactual ------------------------------------------------------
+
+#Com barreira dos 10% e com divisão com partidos que não atingiram o QE
+
+for(i in seq_along(rodadas$SG_UF)){
+  print(i)
+  x<-filter(template_total, SG_UF==rodadas$SG_UF[i])
+  for (rodada in 1:rodadas$dif[i]){
+    print(rodada)
+    x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS+1))
+    x<-x %>% mutate(vencedor=0)
+    x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==1)&((N_ELEGIVEIS-CADEIRAS)>0),1,0))
+    #em caso de não haver vencedores, vamos distribuir a cadeira até ter um vencedor
+    j=2
+    while(sum(x$vencedor)==0){
+      x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==j)&((N_ELEGIVEIS-CADEIRAS)>0),1,0))
+      j=j+1
+    }
+    x<-x %>% mutate(CADEIRAS = CADEIRAS + vencedor)
+  }
+  if(i==1){banco_r4<-x}else{banco_r4<-rbind(banco_r4, x)}
+  rm(x)
+}
+sum(banco_r4$CADEIRAS)
+
+banco_r4 <- banco_r4 %>%
+  select(SG_UF, NM_COLIGACAO, CADEIRAS) %>%
+  rename(CADEIRAS_r4=CADEIRAS)
 
 #4. Retornar eleitos para banco de coligações --------------------------------------------
-template_total<-left_join(template_total, banco_r1, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO"))
-template_total<-left_join(template_total, banco_r2, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO"))
-template_total<-left_join(template_total, banco_r3, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO"))
 
-analise<-template_total %>% group_by(NM_COLIGACAO) %>% summarise_at(c("CADEIRAS_r1", "CADEIRAS_r2", "CADEIRAS_r3"), funs(sum))
+template_total <- template_total %>% 
+  left_join(banco_r1, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO")) %>% 
+  left_join(banco_r2, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO")) %>% 
+  left_join(banco_r3, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO")) %>% 
+  left_join(banco_r4, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO"))
+  
+
+analise <- template_total %>% 
+  group_by(NM_COLIGACAO) %>% 
+  summarise_at(c("CADEIRAS_r1", "CADEIRAS_r2", "CADEIRAS_r3", "CADEIRAS_r4"), funs(sum))
+
+# 5. Banco de Eleitos -----------------------------------------------------
+
+template_candidatos <- template_total %>% 
+  dplyr::mutate(CANDIDATOS = purrr::map(CANDIDATOS, dplyr::arrange, desc(QT_VOTOS)),
+                CANDIDATOS = purrr::map(CANDIDATOS, dplyr::filter, TIPO_VOTO == "NOMINAL")) %>% 
+  group_by(ANO_ELEICAO, NR_TURNO, SG_UF, CD_CARGO) %>% 
+  summarise(ELEITOS_r1 = NA)
+
+template_candidatos[["ELEITOS_r1"]] <- vector("list", length = length(template_candidatos[["ELEITOS_r1"]]))
+
+for(i in seq_along(template_candidatos$ANO_ELEICAO)){
+  banco_temp <- template_total %>% 
+    dplyr::filter(ANO_ELEICAO == template_candidatos$ANO_ELEICAO[[i]],
+                  NR_TURNO    == template_candidatos$NR_TURNO[[i]],
+                  SG_UF       == template_candidatos$SG_UF[[i]],
+                  CD_CARGO    == template_candidatos$CD_CARGO[[i]])
+  
+  for(k in seq_along(banco_temp$ANO_ELEICAO)){
+    n_eleitos <- banco_temp$CADEIRAS_r1[[k]]
+    if(n_eleitos != 0){
+      eleitos_temp <- banco_temp$CANDIDATOS[[k]] %>% 
+        filter(TIPO_VOTO == "NOMINAL") %>% 
+        arrange(desc(QT_VOTOS)) %>% 
+        slice(1:n_eleitos)
+    }
+    if(k == 1 & n_eleitos > 0){
+      eleitos_ <- eleitos_temp
+    } else {
+      eleitos_ <- dplyr::bind_rows(eleitos_, eleitos_temp)
+    }
+  }
+  template_candidatos$ELEITOS_r1[[i]] <- eleitos_
+}
