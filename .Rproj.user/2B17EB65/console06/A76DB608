@@ -70,4 +70,4 @@ Total 18 (delta 7), reused 0 (delta 0)
 remote: Resolving deltas:   0% (0/7)   [Kremote: Resolving deltas:  14% (1/7)   [Kremote: Resolving deltas:  28% (2/7)   [Kremote: Resolving deltas:  42% (3/7)   [Kremote: Resolving deltas:  57% (4/7)   [Kremote: Resolving deltas:  71% (5/7)   [Kremote: Resolving deltas:  85% (6/7)   [Kremote: Resolving deltas: 100% (7/7)   [Kremote: Resolving deltas: 100% (7/7), completed with 7 local objects.[K
 To github.com:GV-CEPESP/caculo_cadeiras.git
    4e4dbc7..bb0e891  master -> master
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras [00m$ 
+]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$ git add -A 

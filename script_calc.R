@@ -43,7 +43,7 @@ template_total <- resultado %>%
                    CANDIDATOS = list(tibble::tibble(TIPO_VOTO = unlist(TIPO_VOTO),
                                                     NR_VOTAVEL = unlist(NR_VOTAVEL),
                                                     QT_VOTOS = unlist(QT_VOTOS)))) %>% 
-  select(-NR_VOTAVEL,-QT_VOTOS,-TIPO_VOTO) %>% 
+  dplyr::select(-NR_VOTAVEL,-QT_VOTOS,-TIPO_VOTO) %>% 
   dplyr::left_join(vagas) %>% 
   dplyr::mutate(TOTAL_VOTOS        = purrr::map_int(CANDIDATOS, ~sum(.$QT_VOTOS)),
                 QUO_ELEITORAL      = sum(TOTAL_VOTOS) / QT_VAGAS,
