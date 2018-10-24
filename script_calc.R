@@ -19,6 +19,11 @@ resultado <- resultado %>%
 
 coligacao_df <- readr::read_rds("data/coligacao.rds")
 
+cand_df <- readr::read_rds("data/candidatos.rds")
+
+coligacao_df <- coligacao_df %>% 
+  filter(SQ_COLIGACAO %in% unique(cand_df$SQ_COLIGACAO))
+
 coligacao_df <- coligacao_df %>% 
   dplyr::filter(CD_CARGO == 6) %>% 
   dplyr::select(ANO_ELEICAO, NR_TURNO, CD_CARGO, SG_UF, TP_AGREMIACAO, SG_PARTIDO, NR_PARTIDO, NM_COLIGACAO, DS_COMPOSICAO_COLIGACAO) %>% 
