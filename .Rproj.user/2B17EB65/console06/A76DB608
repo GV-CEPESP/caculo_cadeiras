@@ -1,110 +1,0 @@
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$[K  giti[K init
-Initialized empty Git repository in /home/rafael/Documents/Meu/calculo_cadeiras/.git/
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  git remote add origin git@github.com:GV-CEPESP/caculo_cadeiiras.git
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  git add[K[A]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  git add -A
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  got [K[K[Kit commit -m "first commit"
-[master (root-commit) 4e4dbc7] first commit
- 34 files changed, 714 insertions(+)
- create mode 100644 .Rproj.user/2B17EB65/console06/A76DB608
- create mode 100644 .Rproj.user/2B17EB65/console06/A76DB608.env
- create mode 100644 .Rproj.user/2B17EB65/console06/INDEX001
- create mode 100644 .Rproj.user/2B17EB65/pcs/files-pane.pper
- create mode 100644 .Rproj.user/2B17EB65/pcs/source-pane.pper
- create mode 100644 .Rproj.user/2B17EB65/pcs/windowlayoutstate.pper
- create mode 100644 .Rproj.user/2B17EB65/pcs/workbench-pane.pper
- create mode 100644 .Rproj.user/2B17EB65/persistent-state
- create mode 100644 .Rproj.user/2B17EB65/rmd-outputs
- create mode 100644 .Rproj.user/2B17EB65/saved_source_markers
- create mode 100644 .Rproj.user/2B17EB65/sources/prop/140F3A24
- create mode 100644 .Rproj.user/2B17EB65/sources/prop/617A5689
- create mode 100644 .Rproj.user/2B17EB65/sources/prop/764CB85C
- create mode 100644 .Rproj.user/2B17EB65/sources/prop/C020CC84
- create mode 100644 .Rproj.user/2B17EB65/sources/prop/INDEX
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/2FA621EA-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/3C0B25FC-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/3D0FC240
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/3D0FC240-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/5CDA68DA
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/5CDA68DA-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/63F35B11-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/70C2BBCF-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/B53C518F-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/F262887-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/lock_file
- create mode 100644 .Rproj.user/shared/notebooks/patch-chunk-names
- create mode 100644 .Rproj.user/shared/notebooks/paths
- create mode 100644 calculo_cadeiras.Rproj
- create mode 100644 data/coligacao.rds
- create mode 100644 data/resultado_2018.rds
- create mode 100644 data/vagas.rds
- create mode 100644 script_calc.R
- create mode 100644 script_download.R
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  git push origin master
-Counting objects: 39, done.
-Delta compression using up to 4 threads.
-Compressing objects:   3% (1/33)   Compressing objects:   6% (2/33)   Compressing objects:   9% (3/33)   Compressing objects:  12% (4/33)   Compressing objects:  15% (5/33)   Compressing objects:  18% (6/33)   Compressing objects:  21% (7/33)   Compressing objects:  24% (8/33)   Compressing objects:  27% (9/33)   Compressing objects:  30% (10/33)   Compressing objects:  33% (11/33)   Compressing objects:  36% (12/33)   Compressing objects:  39% (13/33)   Compressing objects:  42% (14/33)   Compressing objects:  45% (15/33)   Compressing objects:  48% (16/33)   Compressing objects:  51% (17/33)   Compressing objects:  54% (18/33)   Compressing objects:  57% (19/33)   Compressing objects:  60% (20/33)   Compressing objects:  63% (21/33)   Compressing objects:  66% (22/33)   Compressing objects:  69% (23/33)   Compressing objects:  72% (24/33)   Compressing objects:  75% (25/33)   Compressing objects:  78% (26/33)   Compressing objects:  81% (27/33)   Compressing objects:  84% (28/33)   Compressing objects:  87% (29/33)   Compressing objects:  90% (30/33)   Compressing objects:  93% (31/33)   Compressing objects:  96% (32/33)   Compressing objects: 100% (33/33)   Compressing objects: 100% (33/33), done.
-Writing objects:   2% (1/39)   Writing objects:   5% (2/39)   Writing objects:   7% (3/39)   Writing objects:  10% (4/39)   Writing objects:  12% (5/39)   Writing objects:  15% (6/39)   Writing objects:  17% (7/39)   Writing objects:  20% (8/39)   Writing objects:  23% (9/39)   Writing objects:  25% (10/39)   Writing objects:  28% (11/39)   Writing objects:  30% (12/39)   Writing objects:  33% (13/39)   Writing objects:  35% (14/39)   Writing objects:  38% (15/39)   Writing objects:  41% (16/39)   Writing objects:  43% (17/39)   Writing objects:  46% (18/39)   Writing objects:  48% (19/39)   Writing objects:  51% (20/39)   Writing objects:  53% (21/39)   Writing objects:  56% (22/39)   Writing objects:  58% (23/39)   Writing objects:  61% (24/39)   Writing objects:  64% (25/39)   Writing objects:  69% (27/39)   Writing objects:  71% (28/39)   Writing objects:  74% (29/39)   Writing objects:  76% (30/39)   Writing objects:  79% (31/39)   Writing objects:  82% (32/39)   Writing objects:  84% (33/39)   Writing objects:  87% (34/39)   Writing objects:  89% (35/39)   Writing objects:  92% (36/39)   Writing objects:  94% (37/39)   Writing objects:  97% (38/39)   Writing objects: 100% (39/39)   Writing objects: 100% (39/39), 267.67 KiB | 2.23 MiB/s, done.
-Total 39 (delta 3), reused 0 (delta 0)
-remote: Resolving deltas:   0% (0/3)   [Kremote: Resolving deltas:  33% (1/3)   [Kremote: Resolving deltas:  66% (2/3)   [Kremote: Resolving deltas: 100% (3/3)   [Kremote: Resolving deltas: 100% (3/3), done.[K
-remote: 
-remote: Create a pull request for 'master' on GitHub by visiting:[K
-remote:      https://github.com/GV-CEPESP/caculo_cadeiras/pull/new/master[K
-remote: 
-To github.com:GV-CEPESP/caculo_cadeiras.git
- * [new branch]      master -> master
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  clear
-[3J[H[2J]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$  [K[A]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$$ git add -A
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras [00m$ git commit- [K[K -m "add [K[Kd quoeficiente[K[K[K[K[K[K[K[K[K partidrio[K[K[Kario. Fatal o cl[Kalculo das v agas"
-[master bb0e891] add quo partidario. Fatal o calculo das vagas
- 11 files changed, 113 insertions(+), 35 deletions(-)
- delete mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/3D0FC240
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/B1E23C3E
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/B1E23C3E-contents
- create mode 100644 .Rproj.user/2B17EB65/sources/s-85EDE4AC/E020FAFF-contents
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras [00m$ git push origin master
-Counting objects: 18, done.
-Delta compression using up to 4 threads.
-Compressing objects:   5% (1/17)   Compressing objects:  11% (2/17)   Compressing objects:  17% (3/17)   Compressing objects:  23% (4/17)   Compressing objects:  29% (5/17)   Compressing objects:  35% (6/17)   Compressing objects:  41% (7/17)   Compressing objects:  47% (8/17)   Compressing objects:  52% (9/17)   Compressing objects:  58% (10/17)   Compressing objects:  64% (11/17)   Compressing objects:  70% (12/17)   Compressing objects:  76% (13/17)   Compressing objects:  82% (14/17)   Compressing objects:  88% (15/17)   Compressing objects:  94% (16/17)   Compressing objects: 100% (17/17)   Compressing objects: 100% (17/17), done.
-Writing objects:   5% (1/18)   Writing objects:  11% (2/18)   Writing objects:  16% (3/18)   Writing objects:  22% (4/18)   Writing objects:  27% (5/18)   Writing objects:  33% (6/18)   Writing objects:  38% (7/18)   Writing objects:  44% (8/18)   Writing objects:  50% (9/18)   Writing objects:  55% (10/18)   Writing objects:  61% (11/18)   Writing objects:  66% (12/18)   Writing objects:  72% (13/18)   Writing objects:  77% (14/18)   Writing objects:  83% (15/18)   Writing objects:  88% (16/18)   Writing objects:  94% (17/18)   Writing objects: 100% (18/18)   Writing objects: 100% (18/18), 3.47 KiB | 1.16 MiB/s, done.
-Total 18 (delta 7), reused 0 (delta 0)
-remote: Resolving deltas:   0% (0/7)   [Kremote: Resolving deltas:  14% (1/7)   [Kremote: Resolving deltas:  28% (2/7)   [Kremote: Resolving deltas:  42% (3/7)   [Kremote: Resolving deltas:  57% (4/7)   [Kremote: Resolving deltas:  71% (5/7)   [Kremote: Resolving deltas:  85% (6/7)   [Kremote: Resolving deltas: 100% (7/7)   [Kremote: Resolving deltas: 100% (7/7), completed with 7 local objects.[K
-To github.com:GV-CEPESP/caculo_cadeiras.git
-   4e4dbc7..bb0e891  master -> master
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$ git add -A [A
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$ git commit -m "t"
-git: 'commit-m' is not a git command. See 'git --help'.
-
-The most similar command is
-	commit-tree
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$ git commit--m "t"[1@ 
-[master 478423c] t
- 8 files changed, 12 insertions(+), 11 deletions(-)
- rewrite .Rproj.user/2B17EB65/console06/INDEX001 (86%)
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$ git push o rigin master
-Counting objects: 34, done.
-Delta compression using up to 4 threads.
-Compressing objects:   3% (1/30)   Compressing objects:   6% (2/30)   Compressing objects:  10% (3/30)   Compressing objects:  13% (4/30)   Compressing objects:  16% (5/30)   Compressing objects:  20% (6/30)   Compressing objects:  23% (7/30)   Compressing objects:  26% (8/30)   Compressing objects:  30% (9/30)   Compressing objects:  33% (10/30)   Compressing objects:  36% (11/30)   Compressing objects:  40% (12/30)   Compressing objects:  43% (13/30)   Compressing objects:  46% (14/30)   Compressing objects:  50% (15/30)   Compressing objects:  53% (16/30)   Compressing objects:  56% (17/30)   Compressing objects:  60% (18/30)   Compressing objects:  63% (19/30)   Compressing objects:  66% (20/30)   Compressing objects:  70% (21/30)   Compressing objects:  73% (22/30)   Compressing objects:  76% (23/30)   Compressing objects:  80% (24/30)   Compressing objects:  83% (25/30)   Compressing objects:  86% (26/30)   Compressing objects:  90% (27/30)   Compressing objects:  93% (28/30)   Compressing objects:  96% (29/30)   Compressing objects: 100% (30/30)   Compressing objects: 100% (30/30), done.
-Writing objects:   2% (1/34)   Writing objects:   5% (2/34)   Writing objects:   8% (3/34)   Writing objects:  11% (4/34)   Writing objects:  14% (5/34)   Writing objects:  17% (6/34)   Writing objects:  20% (7/34)   Writing objects:  23% (8/34)   Writing objects:  26% (9/34)   Writing objects:  29% (10/34)   Writing objects:  32% (11/34)   Writing objects:  35% (12/34)   Writing objects:  38% (13/34)   Writing objects:  41% (14/34)   Writing objects:  44% (15/34)   Writing objects:  47% (16/34)   Writing objects:  50% (17/34)   Writing objects:  52% (18/34)   Writing objects:  55% (19/34)   Writing objects:  58% (20/34)   Writing objects:  61% (21/34)   Writing objects:  64% (22/34)   Writing objects:  67% (23/34)   Writing objects:  70% (24/34)   Writing objects:  73% (25/34)   Writing objects:  76% (26/34)   Writing objects:  79% (27/34)   Writing objects:  82% (28/34)   Writing objects:  85% (29/34)   Writing objects:  88% (30/34)   Writing objects:  91% (31/34)   Writing objects:  94% (32/34)   Writing objects:  97% (33/34)   Writing objects: 100% (34/34)   Writing objects: 100% (34/34), 3.80 KiB | 973.00 KiB/s, done.
-Total 34 (delta 11), reused 0 (delta 0)
-remote: Resolving deltas:   0% (0/11)   [Kremote: Resolving deltas:   9% (1/11)   [Kremote: Resolving deltas:  18% (2/11)   [Kremote: Resolving deltas:  27% (3/11)   [Kremote: Resolving deltas:  45% (5/11)   [Kremote: Resolving deltas:  63% (7/11)   [Kremote: Resolving deltas:  81% (9/11)   [Kremote: Resolving deltas:  90% (10/11)   [Kremote: Resolving deltas: 100% (11/11)   [Kremote: Resolving deltas: 100% (11/11), completed with 5 local objects.[K
-To github.com:GV-CEPESP/caculo_cadeiras.git
-   bb0e891..478423c  master -> master
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$ [K]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$ git pull
-remote: Enumerating objects: 5, done.[K
-remote: Counting objects:  20% (1/5)   [Kremote: Counting objects:  40% (2/5)   [Kremote: Counting objects:  60% (3/5)   [Kremote: Counting objects:  80% (4/5)   [Kremote: Counting objects: 100% (5/5)   [Kremote: Counting objects: 100% (5/5), done.[K
-remote: Compressing objects:  50% (1/2)   [Kremote: Compressing objects: 100% (2/2)   [Kremote: Compressing objects: 100% (2/2), done.[K
-remote: Total 3 (delta 1), reused 3 (delta 1), pack-reused 0[K
-Unpacking objects:  33% (1/3)   Unpacking objects:  66% (2/3)   Unpacking objects: 100% (3/3)   Unpacking objects: 100% (3/3), done.
-From github.com:GV-CEPESP/caculo_cadeiras
-   478423c..a3e3862  master     -> origin/master
-There is no tracking information for the current branch.
-Please specify which branch you want to merge with.
-See git-pull(1) for details.
-
-    git pull <remote> <branch>
-
-If you wish to set tracking information for this branch you can do so with:
-
-    git branch --set-upstream-to=origin/<branch> master
-
-]0;/home/rafael/Documents/Meu/calculo_cadeiras]0;rafael@rafael-Vostro-5470: ~/Documents/Meu/calculo_cadeiras[01;32mrafael@rafael-Vostro-5470[00m:[01;34m~/Documents/Meu/calculo_cadeiras[00m$ git add -A
