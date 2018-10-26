@@ -22,17 +22,22 @@ coligacao_df <- readr::read_rds("data/coligacao.rds")
 
 cand_df <- readr::read_rds("data/candidatos.rds")
 
-coligacao_df <- coligacao_df %>% 
-  filter(SQ_COLIGACAO %in% unique(cand_df$SQ_COLIGACAO))
 
 coligacao_df <- coligacao_df %>% 
   dplyr::filter(CD_CARGO == 6) %>% 
-  dplyr::select(ANO_ELEICAO, NR_TURNO, CD_CARGO, SG_UF, TP_AGREMIACAO, SG_PARTIDO, NR_PARTIDO, NM_COLIGACAO, DS_COMPOSICAO_COLIGACAO) %>% 
+  dplyr::select(ANO_ELEICAO, NR_TURNO, CD_CARGO, SG_UF, TP_AGREMIACAO, SG_PARTIDO, NR_PARTIDO, NM_COLIGACAO, DS_COMPOSICAO_COLIGACAO, SQ_COLIGACAO) %>% 
   dplyr::mutate(NM_COLIGACAO = ifelse(NM_COLIGACAO == "#NULO#", SG_PARTIDO, NM_COLIGACAO),
                 DS_COMPOSICAO_COLIGACAO = stringr::str_split(DS_COMPOSICAO_COLIGACAO, "/"),
                 DS_COMPOSICAO_COLIGACAO = purrr::map(DS_COMPOSICAO_COLIGACAO, stringr::str_trim))
 
 coligacao_df <- unique(coligacao_df)
+
+#Candidatos votáveis por coligação 
+lista_colig_valida_df<-cand_df %>% filter(CD_CARGO==6) %>% 
+  select(SG_UF, NR_PARTIDO, SQ_COLIGACAO) %>% distinct()
+
+coligacao_df <- coligacao_df %>% 
+  filter(SQ_COLIGACAO %in% unique(lista_colig_valida_df$SQ_COLIGACAO))
 
 ## 2.1. votos validos por lista (legenda + nominal)
 resultado <- resultado %>% 
@@ -42,7 +47,7 @@ resultado <- resultado %>%
 
 template_total <- resultado %>% 
   dplyr::left_join(coligacao_df) %>% 
-  dplyr::group_by(ANO_ELEICAO, NR_TURNO, SG_UF, CD_CARGO, NM_COLIGACAO) %>% 
+  dplyr::group_by(ANO_ELEICAO, NR_TURNO, SG_UF, CD_CARGO, SQ_COLIGACAO) %>% 
   dplyr::summarise(TIPO_VOTO  = list(TIPO_VOTO),
                    NR_VOTAVEL = list(NR_VOTAVEL),
                    QT_VOTOS   = list(QT_VOTOS),
@@ -98,7 +103,7 @@ check <- banco_r1 %>%
   arrange(SG_UF)
 
 banco_r1 <- banco_r1 %>%
-  select(SG_UF, NM_COLIGACAO, CADEIRAS) %>% 
+  select(SG_UF, SQ_COLIGACAO, CADEIRAS) %>% 
   rename(CADEIRAS_r1 = CADEIRAS)
 
 #3.2 Regras 2014 incluindo nanicos na partilha-----------------------------------------------------------------------
@@ -120,16 +125,17 @@ for(i in seq_along(rodadas$SG_UF)){
 sum(banco_r2$CADEIRAS)
 
 banco_r2<-banco_r2 %>%
-  select(SG_UF, NM_COLIGACAO, CADEIRAS) %>%
+  select(SG_UF, SQ_COLIGACAO, CADEIRAS) %>%
   rename(CADEIRAS_r2=CADEIRAS)
 
-#3.3 Regras 2018 -----------------------------------------------------------------------
+#3.3 Regras 2014 com barreira dos 10% -----------------------------------------------------------------------
 #Com barreira dos 10% e com divisão com partidos que não atingiram o QE
 
 for(i in seq_along(rodadas$SG_UF)){
   print(i)
   x<-filter(template_total, SG_UF==rodadas$SG_UF[i])
-  for (rodada in 1:rodadas$dif[i]){
+  x<- x  %>% filter(QUO_ELEITORAL>=1)
+    for (rodada in 1:rodadas$dif[i]){
     print(rodada)
     x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS+1))
     x<-x %>% mutate(vencedor=0)
@@ -148,7 +154,7 @@ for(i in seq_along(rodadas$SG_UF)){
 sum(banco_r3$CADEIRAS)
 
 banco_r3 <- banco_r3 %>%
-  select(SG_UF, NM_COLIGACAO, CADEIRAS) %>%
+  select(SG_UF, SQ_COLIGACAO, CADEIRAS) %>%
   rename(CADEIRAS_r3=CADEIRAS)
 
 # 3.4. Contrafactual ------------------------------------------------------
@@ -177,20 +183,20 @@ for(i in seq_along(rodadas$SG_UF)){
 sum(banco_r4$CADEIRAS)
 
 banco_r4 <- banco_r4 %>%
-  select(SG_UF, NM_COLIGACAO, CADEIRAS) %>%
+  select(SG_UF, SQ_COLIGACAO, CADEIRAS) %>%
   rename(CADEIRAS_r4=CADEIRAS)
 
 #4. Retornar eleitos para banco de coligações --------------------------------------------
 
 template_total <- template_total %>% 
-  left_join(banco_r1, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO")) %>% 
-  left_join(banco_r2, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO")) %>% 
-  left_join(banco_r3, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO")) %>% 
-  left_join(banco_r4, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","NM_COLIGACAO"))
+  left_join(banco_r1, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","SQ_COLIGACAO")) %>% 
+  left_join(banco_r2, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","SQ_COLIGACAO")) %>% 
+  left_join(banco_r3, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","SQ_COLIGACAO")) %>% 
+  left_join(banco_r4, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","SQ_COLIGACAO"))
   
 
 analise <- template_total %>% 
-  group_by(NM_COLIGACAO) %>% 
+  group_by(SQ_COLIGACAO, SG_UF) %>% 
   summarise_at(c("CADEIRAS_r1", "CADEIRAS_r2", "CADEIRAS_r3", "CADEIRAS_r4"), funs(sum))
 
 # 5. Banco de Eleitos -----------------------------------------------------
@@ -211,6 +217,7 @@ for(i in seq_along(template_candidatos$ANO_ELEICAO)){
                   CD_CARGO    == template_candidatos$CD_CARGO[[i]])
   
   for(k in seq_along(banco_temp$ANO_ELEICAO)){
+    print(k)
     n_eleitos <- banco_temp$CADEIRAS_r1[[k]]
     if(n_eleitos != 0){
       eleitos_temp <- banco_temp$CANDIDATOS[[k]] %>% 
@@ -226,3 +233,30 @@ for(i in seq_along(template_candidatos$ANO_ELEICAO)){
   }
   template_candidatos$ELEITOS_r1[[i]] <- eleitos_
 }
+
+
+# 5. Banco de Eleitos - v.Gabi
+votos_cand<-resultado %>% select(SG_UF, NR_VOTAVEL, QT_VOTOS) %>% rename(NR_CANDIDATO = NR_VOTAVEL) %>% ungroup() %>% select(-NR_TURNO)
+chave_join<-colnames(votos_cand[1:5])
+
+template_candidato<- cand_df %>% filter(CD_CARGO==6) %>% select(SG_UF, ANO_ELEICAO, CD_CARGO, DS_CARGO, NR_CANDIDATO, NM_CANDIDATO, NM_COLIGACAO, SQ_COLIGACAO, NR_PARTIDO, NM_PARTIDO) %>% 
+  left_join(votos_cand, by = chave_join) %>% group_by(SG_UF, SQ_COLIGACAO) %>% 
+  mutate(ranking_colig=dense_rank(desc(QT_VOTOS)))
+
+#juntar as cadeiras obtidas por cada coligação
+template_candidato<-left_join(template_candidato, analise) %>% 
+  mutate(eleito_r1 = ifelse(ranking_colig<=CADEIRAS_r1,1,0)) %>% 
+  mutate(eleito_r2 = ifelse(ranking_colig<=CADEIRAS_r2,1,0)) %>% 
+  mutate(eleito_r3 = ifelse(ranking_colig<=CADEIRAS_r3,1,0)) %>% 
+  mutate(eleito_r4 = ifelse(ranking_colig<=CADEIRAS_r4,1,0))
+
+sum(template_candidato$eleito_r1, na.rm = T)
+sum(template_candidato$eleito_r2, na.rm = T)
+sum(template_candidato$eleito_r3, na.rm = T)
+sum(template_candidato$eleito_r4, na.rm = T)
+
+# 6. Banco de bancada 
+
+
+
+
