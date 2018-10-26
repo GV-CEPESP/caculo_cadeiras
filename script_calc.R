@@ -22,7 +22,6 @@ coligacao_df <- readr::read_rds("data/coligacao.rds")
 
 cand_df <- readr::read_rds("data/candidatos.rds")
 
-
 coligacao_df <- coligacao_df %>% 
   dplyr::filter(CD_CARGO == 6) %>% 
   dplyr::select(ANO_ELEICAO, NR_TURNO, CD_CARGO, SG_UF, TP_AGREMIACAO, SG_PARTIDO, NR_PARTIDO, NM_COLIGACAO, DS_COMPOSICAO_COLIGACAO, SQ_COLIGACAO) %>% 
@@ -68,28 +67,25 @@ for(i in seq_along(template_total$CANDIDATOS)){
   n_elegiveis <- sum(template_total$CANDIDATOS[[i]]$QT_VOTOS > barreira)
   template_total$N_ELEGIVEIS[[i]] <- n_elegiveis
 }
-
-sobras <- template_total %>%
-  group_by(SG_UF, QT_VAGAS) %>%
-  summarise(eleitos_UFC=sum(CADEIRAS)) %>% 
-  mutate(dif=QT_VAGAS-eleitos_UFC) %>% arrange(SG_UF)
-
-rodadas<-sobras[c("SG_UF","dif")]
+#Se o número de elegíveis for maior que o de cadeiras, o partido já vai perder as cadeiras pela regra nova
+template_total<-template_total %>% mutate(CADEIRAS_rBarreira= ifelse(N_ELEGIVEIS<CADEIRAS, N_ELEGIVEIS, CADEIRAS))
 
 #3. Cálculo de quantidade de eleitos por coligação em cada regra------------------------
 #3.1 Regras 2014 -----------------------------------------------------------------------
 #Sem barreira dos 10% e sem divisão com partidos que não atingiram o QE
 
-for(i in seq_along(rodadas$SG_UF)){
+for(i in seq_along(vagas$SG_UF)){
   print(i)
-  x<-filter(template_total, SG_UF==rodadas$SG_UF[i])
+  x<-filter(template_total, SG_UF==vagas$SG_UF[i])
   x<- x  %>% filter(QUO_ELEITORAL>=1)
-  for (rodada in 1:rodadas$dif[i]){
-    print(rodada)
+  j=1
+  while(sum(x$CADEIRAS)<vagas$QT_VAGAS[i]){
+    print(j)
     x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS+1))
     x<-x %>% mutate(vencedor=0)
     x<-x %>% mutate(vencedor=ifelse(media==max(.$media),1,0))
     x<-x %>% mutate(CADEIRAS = CADEIRAS + vencedor)
+    j=j+1
   }
   if(i==1){banco_r1<-x}else{banco_r1<-rbind(banco_r1, x)}
   rm(x)
@@ -109,15 +105,18 @@ banco_r1 <- banco_r1 %>%
 #3.2 Regras 2014 incluindo nanicos na partilha-----------------------------------------------------------------------
 #Sem barreira dos 10% e com divisão com partidos que não atingiram o QE
 
-for(i in seq_along(rodadas$SG_UF)){
+
+for(i in seq_along(vagas$SG_UF)){
   print(i)
-  x<-filter(template_total, SG_UF==rodadas$SG_UF[i])
-  for (rodada in 1:rodadas$dif[i]){
-    print(rodada)
+  x<-filter(template_total, SG_UF==vagas$SG_UF[i])
+  j=1
+  while(sum(x$CADEIRAS)<vagas$QT_VAGAS[i]){
+    print(j)
     x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS+1))
     x<-x %>% mutate(vencedor=0)
     x<-x %>% mutate(vencedor=ifelse(media==max(.$media),1,0))
     x<-x %>% mutate(CADEIRAS = CADEIRAS + vencedor)
+    j=j+1
   }
   if(i==1){banco_r2<-x}else{banco_r2<-rbind(banco_r2, x)}
   rm(x)
@@ -129,62 +128,66 @@ banco_r2<-banco_r2 %>%
   rename(CADEIRAS_r2=CADEIRAS)
 
 #3.3 Regras 2014 com barreira dos 10% -----------------------------------------------------------------------
-#Com barreira dos 10% e com divisão com partidos que não atingiram o QE
+#Com barreira dos 10% e sem divisão com partidos que não atingiram o QE
 
-for(i in seq_along(rodadas$SG_UF)){
+for(i in seq_along(vagas$SG_UF)){
   print(i)
-  x<-filter(template_total, SG_UF==rodadas$SG_UF[i])
+  x<-filter(template_total, SG_UF==vagas$SG_UF[i])
   x<- x  %>% filter(QUO_ELEITORAL>=1)
-    for (rodada in 1:rodadas$dif[i]){
-    print(rodada)
-    x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS+1))
+  k=1
+  while(sum(x$CADEIRAS_rBarreira)<vagas$QT_VAGAS[i]){
+    print(k)
+    x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS_rBarreira+1))
     x<-x %>% mutate(vencedor=0)
-    x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==1)&((N_ELEGIVEIS-CADEIRAS)>0),1,0))
+    x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==1)&((N_ELEGIVEIS-CADEIRAS_rBarreira)>0),1,0))
     #em caso de não haver vencedores, vamos distribuir a cadeira até ter um vencedor
     j=2
     while(sum(x$vencedor)==0){
-      x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==j)&((N_ELEGIVEIS-CADEIRAS)>0),1,0))
+      x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==j)&((N_ELEGIVEIS-CADEIRAS_rBarreira)>0),1,0))
       j=j+1
       }
-    x<-x %>% mutate(CADEIRAS = CADEIRAS + vencedor)
+    x<-x %>% mutate(CADEIRAS_rBarreira = CADEIRAS_rBarreira + vencedor)
+    k=k+1
   }
   if(i==1){banco_r3<-x}else{banco_r3<-rbind(banco_r3, x)}
   rm(x)
 }
-sum(banco_r3$CADEIRAS)
+sum(banco_r3$CADEIRAS_rBarreira)
 
 banco_r3 <- banco_r3 %>%
-  select(SG_UF, SQ_COLIGACAO, CADEIRAS) %>%
-  rename(CADEIRAS_r3=CADEIRAS)
+  select(SG_UF, SQ_COLIGACAO, CADEIRAS_rBarreira) %>%
+  rename(CADEIRAS_r3=CADEIRAS_rBarreira)
 
 # 3.4. Contrafactual ------------------------------------------------------
 
 #Com barreira dos 10% e com divisão com partidos que não atingiram o QE
-
-for(i in seq_along(rodadas$SG_UF)){
+for(i in seq_along(vagas$SG_UF)){
   print(i)
-  x<-filter(template_total, SG_UF==rodadas$SG_UF[i])
-  for (rodada in 1:rodadas$dif[i]){
-    print(rodada)
-    x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS+1))
+  x<-filter(template_total, SG_UF==vagas$SG_UF[i])
+  x<- x  %>% filter(QUO_ELEITORAL>=1)
+  k=1
+  while(sum(x$CADEIRAS_rBarreira)<vagas$QT_VAGAS[i]){
+    print(k)
+    x<-x %>% mutate(media=TOTAL_VOTOS/(CADEIRAS_rBarreira+1))
     x<-x %>% mutate(vencedor=0)
-    x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==1)&((N_ELEGIVEIS-CADEIRAS)>0),1,0))
+    x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==1)&((N_ELEGIVEIS-CADEIRAS_rBarreira)>0),1,0))
     #em caso de não haver vencedores, vamos distribuir a cadeira até ter um vencedor
     j=2
     while(sum(x$vencedor)==0){
-      x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==j)&((N_ELEGIVEIS-CADEIRAS)>0),1,0))
+      x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==j)&((N_ELEGIVEIS-CADEIRAS_rBarreira)>0),1,0))
       j=j+1
     }
-    x<-x %>% mutate(CADEIRAS = CADEIRAS + vencedor)
+    x<-x %>% mutate(CADEIRAS_rBarreira = CADEIRAS_rBarreira + vencedor)
+    k=k+1
   }
   if(i==1){banco_r4<-x}else{banco_r4<-rbind(banco_r4, x)}
   rm(x)
 }
-sum(banco_r4$CADEIRAS)
+sum(banco_r4$CADEIRAS_rBarreira)
 
 banco_r4 <- banco_r4 %>%
-  select(SG_UF, SQ_COLIGACAO, CADEIRAS) %>%
-  rename(CADEIRAS_r4=CADEIRAS)
+  select(SG_UF, SQ_COLIGACAO, CADEIRAS_rBarreira) %>%
+  rename(CADEIRAS_r4=CADEIRAS_rBarreira)
 
 #4. Retornar eleitos para banco de coligações --------------------------------------------
 
@@ -239,8 +242,11 @@ for(i in seq_along(template_candidatos$ANO_ELEICAO)){
 votos_cand<-resultado %>% select(SG_UF, NR_VOTAVEL, QT_VOTOS) %>% rename(NR_CANDIDATO = NR_VOTAVEL) %>% ungroup() %>% select(-NR_TURNO)
 chave_join<-colnames(votos_cand[1:5])
 
-template_candidato<- cand_df %>% filter(CD_CARGO==6) %>% select(SG_UF, ANO_ELEICAO, CD_CARGO, DS_CARGO, NR_CANDIDATO, NM_CANDIDATO, NM_COLIGACAO, SQ_COLIGACAO, NR_PARTIDO, NM_PARTIDO) %>% 
+
+template_candidato<- cand_df %>% filter(CD_CARGO==6) %>% select(SG_UF, ANO_ELEICAO, CD_CARGO, DS_CARGO, NR_CANDIDATO, NM_CANDIDATO, DS_SITUACAO_CANDIDATURA, NM_COLIGACAO, SQ_COLIGACAO, NR_PARTIDO, NM_PARTIDO) %>% 
   left_join(votos_cand, by = chave_join) %>% group_by(SG_UF, SQ_COLIGACAO) %>% 
+  #importante, só vamos considerar quem está com a candidatura apta
+  #filter(DS_SITUACAO_CANDIDATURA=="APTO") %>% 
   mutate(ranking_colig=dense_rank(desc(QT_VOTOS)))
 
 #juntar as cadeiras obtidas por cada coligação
@@ -255,8 +261,8 @@ sum(template_candidato$eleito_r2, na.rm = T)
 sum(template_candidato$eleito_r3, na.rm = T)
 sum(template_candidato$eleito_r4, na.rm = T)
 
+  
 # 6. Banco de bancada 
-
-
-
+template_partidos<- template_candidato %>% group_by(NR_PARTIDO, NM_PARTIDO) %>% 
+  summarise_at(c("eleito_r1", "eleito_r2", "eleito_r3", "eleito_r4"), funs(sum(.,na.rm = T)))
 
