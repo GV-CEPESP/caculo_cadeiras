@@ -64,9 +64,10 @@ template_total$N_ELEGIVEIS <- NA
 
 for(i in seq_along(template_total$CANDIDATOS)){
   barreira <- as.integer(template_total$QUO_ELEITORAL[[i]] * 0.10)
-  n_elegiveis <- sum(template_total$CANDIDATOS[[i]]$QT_VOTOS > barreira)
+  n_elegiveis <- sum(template_total$CANDIDATOS[[i]]$QT_VOTOS > barreira & template_total$CANDIDATOS[[i]]$TIPO_VOTO=='NOMINAL' )
   template_total$N_ELEGIVEIS[[i]] <- n_elegiveis
 }
+
 #Se o número de elegíveis for maior que o de cadeiras, o partido já vai perder as cadeiras pela regra nova
 template_total<-template_total %>% mutate(CADEIRAS_rBarreira= ifelse(N_ELEGIVEIS<CADEIRAS, N_ELEGIVEIS, CADEIRAS))
 
@@ -233,3 +234,5 @@ template_partidos_UF<- template_candidato %>% group_by(NR_PARTIDO, NM_PARTIDO, S
   summarise_at(c("eleito_r1", "eleito_r2", "eleito_r3", "eleito_r4"), funs(sum(.,na.rm = T)))
 
 PSL<- template_partidos_UF %>% filter(NR_PARTIDO==17)
+
+write.csv(template_candidato, 'outrobanco.csv')
