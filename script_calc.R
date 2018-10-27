@@ -56,7 +56,7 @@ template_total <- resultado %>%
   dplyr::select(-NR_VOTAVEL,-QT_VOTOS,-TIPO_VOTO) %>% 
   dplyr::left_join(vagas) %>% 
   dplyr::mutate(TOTAL_VOTOS        = purrr::map_int(CANDIDATOS, ~sum(.$QT_VOTOS)),
-                QUO_ELEITORAL      = sum(TOTAL_VOTOS) / QT_VAGAS,
+                QUO_ELEITORAL      = round(sum(TOTAL_VOTOS) / QT_VAGAS,0),
                 QUO_PARTIDARIO     = TOTAL_VOTOS/QUO_ELEITORAL,
                 CADEIRAS = floor(TOTAL_VOTOS/QUO_ELEITORAL))
 
@@ -77,7 +77,7 @@ template_total<-template_total %>% mutate(CADEIRAS_rBarreira= ifelse(N_ELEGIVEIS
 for(i in seq_along(vagas$SG_UF)){
   print(i)
   x<-filter(template_total, SG_UF==vagas$SG_UF[i])
-  x<- x  %>% filter(QUO_ELEITORAL>=1)
+  x<- x  %>% filter(QUO_PARTIDARIO>=1)
   j=1
   while(sum(x$CADEIRAS)<vagas$QT_VAGAS[i]){
     print(j)
@@ -133,7 +133,7 @@ banco_r2<-banco_r2 %>%
 for(i in seq_along(vagas$SG_UF)){
   print(i)
   x<-filter(template_total, SG_UF==vagas$SG_UF[i])
-  x<- x  %>% filter(QUO_ELEITORAL>=1)
+  x<- x  %>% filter(QUO_PARTIDARIO>=1)
   k=1
   while(sum(x$CADEIRAS_rBarreira)<vagas$QT_VAGAS[i]){
     print(k)
@@ -164,7 +164,6 @@ banco_r3 <- banco_r3 %>%
 for(i in seq_along(vagas$SG_UF)){
   print(i)
   x<-filter(template_total, SG_UF==vagas$SG_UF[i])
-  x<- x  %>% filter(QUO_ELEITORAL>=1)
   k=1
   while(sum(x$CADEIRAS_rBarreira)<vagas$QT_VAGAS[i]){
     print(k)
@@ -202,42 +201,6 @@ analise <- template_total %>%
   group_by(SQ_COLIGACAO, SG_UF) %>% 
   summarise_at(c("CADEIRAS_r1", "CADEIRAS_r2", "CADEIRAS_r3", "CADEIRAS_r4"), funs(sum))
 
-# 5. Banco de Eleitos -----------------------------------------------------
-
-template_candidatos <- template_total %>% 
-  dplyr::mutate(CANDIDATOS = purrr::map(CANDIDATOS, dplyr::arrange, desc(QT_VOTOS)),
-                CANDIDATOS = purrr::map(CANDIDATOS, dplyr::filter, TIPO_VOTO == "NOMINAL")) %>% 
-  group_by(ANO_ELEICAO, NR_TURNO, SG_UF, CD_CARGO) %>% 
-  summarise(ELEITOS_r1 = NA)
-
-template_candidatos[["ELEITOS_r1"]] <- vector("list", length = length(template_candidatos[["ELEITOS_r1"]]))
-
-for(i in seq_along(template_candidatos$ANO_ELEICAO)){
-  banco_temp <- template_total %>% 
-    dplyr::filter(ANO_ELEICAO == template_candidatos$ANO_ELEICAO[[i]],
-                  NR_TURNO    == template_candidatos$NR_TURNO[[i]],
-                  SG_UF       == template_candidatos$SG_UF[[i]],
-                  CD_CARGO    == template_candidatos$CD_CARGO[[i]])
-  
-  for(k in seq_along(banco_temp$ANO_ELEICAO)){
-    print(k)
-    n_eleitos <- banco_temp$CADEIRAS_r1[[k]]
-    if(n_eleitos != 0){
-      eleitos_temp <- banco_temp$CANDIDATOS[[k]] %>% 
-        filter(TIPO_VOTO == "NOMINAL") %>% 
-        arrange(desc(QT_VOTOS)) %>% 
-        slice(1:n_eleitos)
-    }
-    if(k == 1 & n_eleitos > 0){
-      eleitos_ <- eleitos_temp
-    } else {
-      eleitos_ <- dplyr::bind_rows(eleitos_, eleitos_temp)
-    }
-  }
-  template_candidatos$ELEITOS_r1[[i]] <- eleitos_
-}
-
-
 # 5. Banco de Eleitos - v.Gabi
 votos_cand<-resultado %>% select(SG_UF, NR_VOTAVEL, QT_VOTOS) %>% rename(NR_CANDIDATO = NR_VOTAVEL) %>% ungroup() %>% select(-NR_TURNO)
 chave_join<-colnames(votos_cand[1:5])
@@ -266,3 +229,7 @@ sum(template_candidato$eleito_r4, na.rm = T)
 template_partidos<- template_candidato %>% group_by(NR_PARTIDO, NM_PARTIDO) %>% 
   summarise_at(c("eleito_r1", "eleito_r2", "eleito_r3", "eleito_r4"), funs(sum(.,na.rm = T)))
 
+template_partidos_UF<- template_candidato %>% group_by(NR_PARTIDO, NM_PARTIDO, SG_UF) %>% 
+  summarise_at(c("eleito_r1", "eleito_r2", "eleito_r3", "eleito_r4"), funs(sum(.,na.rm = T)))
+
+PSL<- template_partidos_UF %>% filter(NR_PARTIDO==17)
