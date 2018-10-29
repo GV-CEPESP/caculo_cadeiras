@@ -33,7 +33,13 @@ readr::write_rds(vagas, "data/vagas.rds")
 
 # 3. Banco - Votos --------------------------------------------------------
 
+<<<<<<< HEAD
 temp_dir <- "raw_data/votos_secao/"
+=======
+temp_dir <- tempdir()
+temp_file <- tempfile()
+print(temp_dir)
+>>>>>>> b956dc2a465ba307f5f520dd5c47a73ce7feb8eb
 
 u0 <- "http://www.tse.jus.br/hotsites/pesquisas-eleitorais/resultados_anos/votacao/votacao_secao_eleitoral_2018.html"
 
@@ -50,7 +56,12 @@ for(link in links_votacao){
 
 # Agregando resultados por uf
 
+<<<<<<< HEAD
 zip_path <- list.files(temp_dir, pattern = "votacao_secao_2018_[A-Z]{2}\\.zip", full.names = TRUE)
+=======
+secao_path <- list.files(temp_dir, pattern = "votacao_secao_2018_[A-Z]{2}\\.csv", full.names = TRUE)
+banco_ls <- vector("list", length = length(secao_path))
+>>>>>>> b956dc2a465ba307f5f520dd5c47a73ce7feb8eb
 
 purrr::walk(zip_path, unzip, exdir = temp_dir)
 
