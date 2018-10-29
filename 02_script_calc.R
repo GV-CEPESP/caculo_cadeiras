@@ -25,6 +25,9 @@ cand_df <- readr::read_rds("data/candidatos.rds")
 coligacao_df <- coligacao_df %>% 
   filter(SQ_COLIGACAO %in% unique(cand_df$SQ_COLIGACAO))
 
+purrr::map(list(coligacao_df, cand_df, resultado,vagas), ungroup) %>% 
+  purrr::map(count, SG_UF)
+
 coligacao_df <- coligacao_df %>% 
   dplyr::filter(CD_CARGO == 6) %>% 
   dplyr::select(ANO_ELEICAO, NR_TURNO, CD_CARGO, SG_UF, TP_AGREMIACAO, SG_PARTIDO, NR_PARTIDO, NM_COLIGACAO, DS_COMPOSICAO_COLIGACAO) %>% 
@@ -204,6 +207,7 @@ template_candidatos <- template_total %>%
 template_candidatos[["ELEITOS_r1"]] <- vector("list", length = length(template_candidatos[["ELEITOS_r1"]]))
 
 for(i in seq_along(template_candidatos$ANO_ELEICAO)){
+  try(rm("eleitos_"))
   banco_temp <- template_total %>% 
     dplyr::filter(ANO_ELEICAO == template_candidatos$ANO_ELEICAO[[i]],
                   NR_TURNO    == template_candidatos$NR_TURNO[[i]],
@@ -218,9 +222,9 @@ for(i in seq_along(template_candidatos$ANO_ELEICAO)){
         arrange(desc(QT_VOTOS)) %>% 
         slice(1:n_eleitos)
     }
-    if(k == 1 & n_eleitos > 0){
+    if(!exists("eleitos_") & n_eleitos > 0){
       eleitos_ <- eleitos_temp
-    } else {
+    } else if(n_eleitos > 0){
       eleitos_ <- dplyr::bind_rows(eleitos_, eleitos_temp)
     }
   }
