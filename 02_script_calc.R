@@ -264,11 +264,6 @@ template_candidato %>%
   count(SQ_COLIGACAO, ranking_colig) %>% 
   filter(n > 1)
 
-template_candidato %>% 
-  filter(SQ_COLIGACAO == 20000050452,
-         ranking_colig == 13) %>% 
-  View()
-
 sum(template_candidato$eleito_r1, na.rm = T)
 sum(template_candidato$eleito_r2, na.rm = T)
 sum(template_candidato$eleito_r3, na.rm = T)
@@ -287,4 +282,4 @@ template_partidos_UF <- template_candidato %>%
 PSL <- template_partidos_UF %>% 
   filter(NR_PARTIDO == 17)
 
-write.csv(template_candidato, 'outrobanco.csv')
+write_csv(template_candidato, 'candidados_eleitos.csv')
