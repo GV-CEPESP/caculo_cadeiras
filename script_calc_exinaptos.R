@@ -42,8 +42,7 @@ coligacao_df <- coligacao_df %>%
 resultado <- resultado %>% 
   dplyr::mutate(NR_PARTIDO = stringr::str_sub(NR_VOTAVEL,1,2),
                 NR_PARTIDO = as.numeric(NR_PARTIDO)) %>% 
-  dplyr::filter(!(NR_PARTIDO %in% c(95,96,97)))
-
+  dplyr::filter(!(NR_PARTIDO %in% c(95,96,97))) %>% 
 
 template_total <- resultado %>% 
   dplyr::left_join(coligacao_df) %>% 
@@ -147,7 +146,7 @@ for(i in seq_along(vagas$SG_UF)){
     while(sum(x$vencedor)==0){
       x<-x %>% mutate(vencedor=ifelse((dense_rank(desc(.$media))==j)&((N_ELEGIVEIS-CADEIRAS_rBarreira)>0),1,0))
       j=j+1
-      }
+    }
     x<-x %>% mutate(CADEIRAS_rBarreira = CADEIRAS_rBarreira + vencedor)
     k=k+1
   }
@@ -197,7 +196,7 @@ template_total <- template_total %>%
   left_join(banco_r2, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","SQ_COLIGACAO")) %>% 
   left_join(banco_r3, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","SQ_COLIGACAO")) %>% 
   left_join(banco_r4, by = c("ANO_ELEICAO","NR_TURNO","CD_CARGO","SG_UF","SQ_COLIGACAO"))
-  
+
 
 analise <- template_total %>% 
   group_by(SQ_COLIGACAO, SG_UF) %>% 
@@ -226,12 +225,10 @@ sum(template_candidato$eleito_r2, na.rm = T)
 sum(template_candidato$eleito_r3, na.rm = T)
 sum(template_candidato$eleito_r4, na.rm = T)
 
-  
+
 # 6. Banco de bancada 
 template_partidos<- template_candidato %>% group_by(NR_PARTIDO, NM_PARTIDO) %>% 
   summarise_at(c("eleito_r1", "eleito_r2", "eleito_r3", "eleito_r4"), funs(sum(.,na.rm = T)))
 
 template_partidos_UF<- template_candidato %>% group_by(NR_PARTIDO, NM_PARTIDO, SG_UF) %>% 
   summarise_at(c("eleito_r1", "eleito_r2", "eleito_r3", "eleito_r4"), funs(sum(.,na.rm = T)))
-
-temp_RN<-template_total %>% filter(SG_UF=="RN")
