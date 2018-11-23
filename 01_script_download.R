@@ -138,7 +138,7 @@ files_path <- list.files(temp_dir,
                          pattern = "votacao_candidato_munzona_2018_[A-Z]{2}\\.csv",
                          full.names = TRUE)
 
-munzona <- purrr::map(files_path, readr::read_csv, locale = readr::locale(encoding = "ISO-8859-1"))
+munzona <- purrr::map(files_path, readr::read_csv, locale = readr::locale(encoding = "ISO-8859-1", dec = '.'))
 
 munzona_df <- rbindlist(munzona)
 
@@ -159,7 +159,7 @@ files_path <- list.files(temp_dir,
                          pattern = "votacao_partido_munzona_2018_[A-Z]{2}\\.csv",
                          full.names = TRUE)
 
-munzona_partido <- purrr::map(files_path, readr::read_csv2, locale = readr::locale(encoding = "latin1"))
+munzona_partido <- purrr::map(files_path, readr::read_csv2, locale = readr::locale(encoding = "latin1", dec = '.'))
 
 munzona_partido_df <- rbindlist(munzona_partido)
 
