@@ -12,12 +12,58 @@ vagas <- vagas %>%
 
 # 2. template resultado ---------------------------------------------------
 
-resultado <- readr::read_rds("data/resultado_2018.rds")
+#Vamos usar a base munzona porque teremos apenas os votos que foram considerados
+#Primeiro os candidatos
+resultado <- readr::read_rds("data/munzona.rds")
 
 resultado <- resultado %>% 
-  dplyr::filter(CD_CARGO == 6) %>% 
-  dplyr::mutate(TIPO_VOTO = ifelse(NR_VOTAVEL %/% 100 > 1, "NOMINAL", "LEGENDA"))
+  dplyr::filter(CD_CARGO == 6) 
 
+resultado <- resultado %>% 
+  dplyr::mutate(TIPO_VOTO = "NOMINAL") %>% 
+  select(SG_UF, CD_CARGO, DS_CARGO, SQ_CANDIDATO, NR_CANDIDATO, 
+         NM_CANDIDATO, DS_SITUACAO_CANDIDATURA, TP_AGREMIACAO, NR_PARTIDO, 
+         SG_PARTIDO,NM_PARTIDO, SQ_COLIGACAO, DS_COMPOSICAO_COLIGACAO, DS_SIT_TOT_TURNO, 
+         QT_VOTOS_NOMINAIS, TIPO_VOTO) 
+
+resultado <- resultado %>% group_by(SG_UF, CD_CARGO, DS_CARGO, SQ_CANDIDATO, NR_CANDIDATO, 
+                                    NM_CANDIDATO, DS_SITUACAO_CANDIDATURA, TP_AGREMIACAO, NR_PARTIDO, 
+                                    SG_PARTIDO,NM_PARTIDO, SQ_COLIGACAO, DS_COMPOSICAO_COLIGACAO, DS_SIT_TOT_TURNO, TIPO_VOTO) %>% 
+  summarise(QT_VOTOS_NOMINAIS = sum(QT_VOTOS_NOMINAIS, na.rm = T)) %>% ungroup()%>% 
+  rename(QT_VOTOS = QT_VOTOS_NOMINAIS)
+
+#Depois os votos por partido
+resultado_partido <- readr::read_rds("data/munzona_partido.rds")
+
+resultado_partido <- resultado_partido %>% 
+  dplyr::filter(CD_CARGO == 6) 
+
+resultado_partido <- resultado_partido %>% 
+  mutate( TIPO_VOTO =  "LEGENDA") %>% 
+  select(SG_UF, CD_CARGO, DS_CARGO, 
+          TP_AGREMIACAO, NR_PARTIDO, 
+         SG_PARTIDO,NM_PARTIDO, SQ_COLIGACAO, DS_COMPOSICAO_COLIGACAO, 
+         QT_VOTOS_LEGENDA, TIPO_VOTO) %>% 
+  group_by(SG_UF, CD_CARGO, DS_CARGO, TP_AGREMIACAO, NR_PARTIDO, 
+  SG_PARTIDO,NM_PARTIDO, SQ_COLIGACAO, DS_COMPOSICAO_COLIGACAO, TIPO_VOTO) %>% 
+  summarise(QT_VOTOS_LEGENDA = sum(QT_VOTOS_LEGENDA, na.rm = T)) %>% 
+  ungroup() %>% 
+  rename(QT_VOTOS = QT_VOTOS_LEGENDA)
+
+Missing <- setdiff(colnames(resultado), colnames(resultado_partido))  # Find names of missing columns
+resultado_partido[Missing] <- NA                    # Add them, filled with '0's
+
+#Juntas as bases e ajusta
+resultado<-rbind(resultado, resultado_partido)
+rm(resultado_partido)
+
+resultado<- resultado %>% rename(NR_VOTAVEL = NR_CANDIDATO) %>% 
+  mutate(NR_VOTAVEL = ifelse(is.na(NR_VOTAVEL), NR_PARTIDO, NR_VOTAVEL)) %>% 
+  select(-DS_COMPOSICAO_COLIGACAO)
+
+resultado$eleito<-ifelse(str_detect(resultado$DS_SIT_TOT_TURNO, "ELEITO POR"),1,0)
+
+#Outras bases
 coligacao_df <- readr::read_rds("data/coligacao.rds")
 
 cand_df <- readr::read_rds("data/candidatos.rds")
@@ -233,25 +279,25 @@ analise <- template_total %>%
 # 5. Banco de Eleitos - v.Gabi
 
 votos_cand <- resultado %>% 
-  select(SG_UF, NR_VOTAVEL, QT_VOTOS) %>% 
+  select(SG_UF, NR_VOTAVEL, DS_SIT_TOT_TURNO, eleito, QT_VOTOS) %>% 
   rename(NR_CANDIDATO = NR_VOTAVEL) %>%
-  ungroup() %>%
-  select(-NR_TURNO)
+  ungroup()
 
-chave_join <- colnames(votos_cand[1:5])
+#chave_join <- colnames(votos_cand[1:5])
 
 template_candidato <- cand_df %>% 
   filter(CD_CARGO==6) %>% 
   select(SG_UF, ANO_ELEICAO, CD_CARGO, DS_CARGO, NR_CANDIDATO,
          NM_CANDIDATO, DS_SITUACAO_CANDIDATURA, NR_IDADE_DATA_POSSE,
          NM_COLIGACAO, SQ_COLIGACAO, NR_PARTIDO, NM_PARTIDO) %>% 
-  left_join(votos_cand, by = chave_join) %>%
+  left_join(votos_cand) %>%
   group_by(SG_UF, SQ_COLIGACAO) %>% 
   arrange(desc(QT_VOTOS), desc(NR_IDADE_DATA_POSSE)) %>% 
   #importante, só vamos considerar quem está com a candidatura apta
-  #filter(DS_SITUACAO_CANDIDATURA=="APTO") %>% 
+  filter(DS_SITUACAO_CANDIDATURA=="APTO") %>% 
   mutate(ranking_colig = 1,
-         ranking_colig = cumsum(ranking_colig))
+         ranking_colig = cumsum(ranking_colig)) %>% 
+  distinct()
 
 #juntar as cadeiras obtidas por cada coligação
 template_candidato <- template_candidato %>% 
@@ -280,11 +326,16 @@ template_partidos_UF <- template_candidato %>%
   group_by(NR_PARTIDO, NM_PARTIDO, SG_UF) %>% 
   summarise_at(c("eleito_r1", "eleito_r2", "eleito_r3", "eleito_r4"), funs(sum(.,na.rm = T)))
 
-<<<<<<< HEAD:script_calc.R
-temp_RN<-template_total %>% filter(SG_UF=="RN")
-=======
-PSL <- template_partidos_UF %>% 
-  filter(NR_PARTIDO == 17)
 
 write_csv(template_candidato, 'candidados_eleitos.csv')
->>>>>>> fb27971313a424e8fdd73205631ec9b621da0074:02_script_calc.R
+
+#5. Checks do sistemas -------------------------------------------------------
+template_candidato$check <- ifelse(template_candidato$eleito==template_candidato$eleito_r4,0,1)
+check<-template_candidato %>% filter(check==1)
+
+sum(template_candidato$eleito_r4, na.rm = T)
+sum(template_candidato$eleito, na.rm = T)
+
+check2<-template_candidato %>% group_by(SG_UF) %>% summarise_at(vars(eleito, eleito_r4),funs(sum(.,na.rm = T)))
+check3<-resultado %>% group_by(DS_SITUACAO_CANDIDATURA, DS_SIT_TOT_TURNO) %>% summarise(eleito=sum(eleito))
+eleitos_MG<-template_candidato %>% filter(SG_UF=="MG") %>% filter(eleito==1)

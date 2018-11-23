@@ -10,10 +10,11 @@ suppressWarnings(dir.create("raw_data/candidatos"))
 # 1. Pacotes --------------------------------------------------------------
 
 library(magrittr) # %>% 
-
+library(dplyr)
+library(data.table)
 # 2. Banco - Vagas --------------------------------------------------------
 
-temp_dir <- "raw_data/vagas/"
+temp_dir <- file.path(getwd(),"/raw_data/vagas/")
 temp_file <- "raw_data/vagas/vagas.zip"
 
 download.file("http://agencia.tse.jus.br/estatistica/sead/odsele/consulta_vagas/consulta_vagas_2018.zip",
@@ -33,13 +34,11 @@ readr::write_rds(vagas, "data/vagas.rds")
 
 # 3. Banco - Votos --------------------------------------------------------
 
-<<<<<<< HEAD
-temp_dir <- "raw_data/votos_secao/"
-=======
+temp_dir <- file.path(getwd(),"/raw_data/votos_secao/")
+
 temp_dir <- tempdir()
 temp_file <- tempfile()
 print(temp_dir)
->>>>>>> b956dc2a465ba307f5f520dd5c47a73ce7feb8eb
 
 u0 <- "http://www.tse.jus.br/hotsites/pesquisas-eleitorais/resultados_anos/votacao/votacao_secao_eleitoral_2018.html"
 
@@ -56,12 +55,10 @@ for(link in links_votacao){
 
 # Agregando resultados por uf
 
-<<<<<<< HEAD
+
 zip_path <- list.files(temp_dir, pattern = "votacao_secao_2018_[A-Z]{2}\\.zip", full.names = TRUE)
-=======
 secao_path <- list.files(temp_dir, pattern = "votacao_secao_2018_[A-Z]{2}\\.csv", full.names = TRUE)
 banco_ls <- vector("list", length = length(secao_path))
->>>>>>> b956dc2a465ba307f5f520dd5c47a73ce7feb8eb
 
 purrr::walk(zip_path, unzip, exdir = temp_dir)
 
@@ -87,7 +84,7 @@ readr::write_rds(banco, "data/resultado_2018.rds")
 # 3. Coligação ------------------------------------------------------------
 
 temp_file <- "raw_data/coligacao/coligacao.zip"
-temp_dir <- "raw_data/coligacao/"
+temp_dir <- file.path(getwd(),"/raw_data/coligacao/")
 
 u0 <- "http://agencia.tse.jus.br/estatistica/sead/odsele/consulta_coligacao/consulta_coligacao_2018.zip"
 
@@ -108,7 +105,7 @@ readr::write_rds(coligacao_df, "data/coligacao.rds")
 # 4. Candidatos -----------------------------------------------------------
 
 temp_file <- "raw_data/candidatos/candidatos.zip"
-temp_dir <- "raw_data/candidatos/"
+temp_dir <- file.path(getwd(),"/raw_data/candidatos/")
 
 u0 <- "http://agencia.tse.jus.br/estatistica/sead/odsele/consulta_cand/consulta_cand_2018.zip"
 
@@ -125,3 +122,45 @@ cand_ls <- purrr::map(files_path, readr::read_csv2, locale = readr::locale(encod
 cand_df <- dplyr::bind_rows(cand_ls)
 
 readr::write_rds(cand_df, "data/candidatos.rds")
+
+# 5. Munzona Candidato-----------------------------------------------------------
+
+temp_file <- "raw_data/munzona/munzona.zip"
+temp_dir <- file.path(getwd(),"/raw_data/munzona/")
+
+u0 <- "http://agencia.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2018.zip"
+
+download.file(u0, destfile = temp_file)
+
+unzip(temp_file, exdir = temp_dir)
+
+files_path <- list.files(temp_dir, 
+                         pattern = "votacao_candidato_munzona_2018_[A-Z]{2}\\.csv",
+                         full.names = TRUE)
+
+munzona <- purrr::map(files_path, readr::read_csv, locale = readr::locale(encoding = "ISO-8859-1"))
+
+munzona_df <- rbindlist(munzona)
+
+readr::write_rds(munzona_df, "data/munzona.rds")
+
+# 6. Munzona Partido-----------------------------------------------------------
+
+temp_file <- "raw_data/munzona_partido/munzona_partido.zip"
+temp_dir <- file.path(getwd(),"/raw_data/munzona_partido/")
+
+u0 <- "http://agencia.tse.jus.br/estatistica/sead/odsele/votacao_partido_munzona/votacao_partido_munzona_2018.zip"
+
+download.file(u0, destfile = temp_file)
+
+unzip(temp_file, exdir = temp_dir)
+
+files_path <- list.files(temp_dir, 
+                         pattern = "votacao_partido_munzona_2018_[A-Z]{2}\\.csv",
+                         full.names = TRUE)
+
+munzona_partido <- purrr::map(files_path, readr::read_csv2, locale = readr::locale(encoding = "latin1"))
+
+munzona_partido_df <- rbindlist(munzona_partido)
+
+readr::write_rds(munzona_partido_df, "data/munzona_partido.rds")
